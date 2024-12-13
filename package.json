@@ -1,6 +1,25 @@
 {
-  "name": "gomessage_server",
-  "version": "1.0.0",
-  "main": "index.js",
-  "license": "MIT"
+	"name": "gomessage_server",
+	"version": "1.0.0",
+	"main": "app.js",
+	"license": "MIT",
+	"dependencies": {
+		"cors": "^2.8.5",
+		"dayjs": "^1.11.13",
+		"express": "^4.21.2",
+		"socket.io": "^4.8.1"
+	},
+	"devDependencies": {
+		"@eslint/js": "^9.17.0",
+		"@types/cors": "^2.8.17",
+		"@types/express": "^5.0.0",
+		"eslint": "^9.17.0",
+		"globals": "^15.13.0",
+		"typescript-eslint": "^8.18.0"
+	},
+	"scripts": {
+		"dev": "npx nodemon ./src/app.ts",
+		"lint": "npx eslint .",
+		"build": "npx eslint . && tsc"
+	}
 }
