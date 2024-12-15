@@ -1,5 +1,5 @@
 import { Box, Button, TextField, TextFieldProps } from "@mui/material";
-import { ClipboardEvent, FormEvent, useRef, useState } from "react";
+import { ClipboardEvent, FormEvent, useMemo, useRef, useState } from "react";
 import { grey } from "@mui/material/colors";
 import { ClipboardElement } from "../Clipboard/ClipboardElement";
 
@@ -43,6 +43,12 @@ export const Input = ({ onSubmit, ...textFieldProps }: Props) => {
 		}
 	};
 
+	const renderFiles = useMemo(() => {
+		return files.map((file) => (
+			<ClipboardElement key={file.lastModified} file={file} height={120} />
+		));
+	}, [files]);
+
 	return (
 		<form
 			style={{
@@ -66,9 +72,7 @@ export const Input = ({ onSubmit, ...textFieldProps }: Props) => {
 					overflowY: "scroll",
 				}}
 			>
-				{files.map((file) => (
-					<ClipboardElement key={file.lastModified} file={file} height={120} />
-				))}
+				{renderFiles}
 			</Box>
 			<Box
 				style={{

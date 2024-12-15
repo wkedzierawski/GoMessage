@@ -1,7 +1,7 @@
 import { Box, Paper, Typography } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import dayjs from "dayjs";
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { If } from "../../utils/If";
 import { ClipboardElement } from "../Clipboard/ClipboardElement";
 
@@ -26,7 +26,15 @@ export const Message = ({
 		ref.current?.scrollIntoView({ behavior: "smooth" });
 	}, []);
 
-	console.log(files);
+	const renderFiles = useMemo(() => {
+		return files.map((file, index) => (
+			<ClipboardElement
+				key={`${messageId}-${index}-file`}
+				file={file}
+				height={300}
+			/>
+		));
+	}, [files, messageId]);
 
 	return (
 		<Paper
@@ -46,13 +54,7 @@ export const Message = ({
 				flexDirection: "column",
 			}}
 		>
-			{files.map((file, index) => (
-				<ClipboardElement
-					key={`${messageId}-${index}-file`}
-					file={file}
-					height={300}
-				/>
-			))}
+			{renderFiles}
 
 			<Box sx={{ display: "flex", width: "100%" }}>
 				<If condition={message}>

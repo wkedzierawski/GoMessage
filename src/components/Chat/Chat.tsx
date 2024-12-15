@@ -58,8 +58,6 @@ export const Chat = () => {
 			return;
 		}
 
-		console.log("Send video", files);
-
 		AppSocket.emit(SocketEvent.sendMessage, {
 			date: new Date().toISOString(),
 			message,
