@@ -30,17 +30,9 @@ class Socket {
 	private socket: ReturnType<typeof io>;
 
 	constructor() {
-		this.socket = io("ws://localhost:3000", {
+		this.socket = io(import.meta.env.DEV ? "//localhost:3000" : "/", {
 			reconnectionDelayMax: 10000,
 		});
-
-		// this.socket.on("disconnect", () =>
-		// 	queryClient.invalidateQueries({ queryKey: [QueryKey.chat] })
-		// );
-
-		// this.socket.on("reconnect", () =>
-		// 	queryClient.invalidateQueries({ queryKey: [QueryKey.chat] })
-		// );
 	}
 
 	public emit = <T extends SocketEvent>(
