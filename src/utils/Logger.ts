@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 
 export class Logger {
-	private static enableLogs = false;
+	private static enableLogs = true;
 
 	public static info = (...payload: unknown[]) => {
 		if (!this.enableLogs) {

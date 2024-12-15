@@ -1,6 +1,7 @@
 import { Express, Request, Response } from "express";
 import { Logger } from "../utils/Logger";
 import { ApiRoute, ApiRouteResponse } from "../types/api.types";
+import { join } from "path";
 
 export class RestServer {
 	private app: Express;
@@ -8,14 +9,19 @@ export class RestServer {
 	constructor(app: Express) {
 		this.app = app;
 		this.init();
+
+		app.get("*", (req, res) => {
+			console.log(join(__dirname, "..", "build", "index.html"));
+			res.sendFile(join(__dirname, "..", "build", "index.html"));
+		});
 	}
 
 	private init = () => {
 		Logger.info("Initialize RestServer");
 
-		this.app.get("/", (_, res) => {
-			res.send("Hello world!");
-		});
+		// this.app.get("/", (_, res) => {
+		// 	res.send("Hello world!");
+		// });
 
 		this.get(ApiRoute.createChat);
 		this.post(ApiRoute.connectChat);
