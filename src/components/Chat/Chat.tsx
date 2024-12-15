@@ -15,6 +15,7 @@ const initMessage = (chatId: string | undefined): MessageProps[] => [
 		date: new Date().toISOString(),
 		message: `Entered chat: ${chatId}`,
 		messageId: "0",
+		images: [],
 		self: false,
 	},
 ];
@@ -52,7 +53,7 @@ export const Chat = () => {
 		return messages.map((item) => <Message key={item.messageId} {...item} />);
 	}, [messages]);
 
-	const sendMessage = (message: string) => {
+	const sendMessage = (message: string, images: File[]) => {
 		if (!chatId) {
 			return;
 		}
@@ -61,6 +62,7 @@ export const Chat = () => {
 			date: new Date().toISOString(),
 			message,
 			chatId,
+			images,
 		});
 	};
 
