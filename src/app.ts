@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 3000;
 app.use(cors({ origin: "*" }));
 app.use(express.json());
 
-app.use(express.static(path.join(__dirname, "build")));
+app.use(express.static(path.join(__dirname, "..", "app_build")));
 
 const httpServer = createServer(app);
 const io = new Server(httpServer);

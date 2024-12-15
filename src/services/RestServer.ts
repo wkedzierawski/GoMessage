@@ -10,9 +10,8 @@ export class RestServer {
 		this.app = app;
 		this.init();
 
-		app.get("*", (req, res) => {
-			console.log(join(__dirname, "..", "build", "index.html"));
-			res.sendFile(join(__dirname, "..", "build", "index.html"));
+		app.get("*", (_, res) => {
+			res.sendFile(join(__dirname, "..", "..", "app_build", "index.html"));
 		});
 	}
 
