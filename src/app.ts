@@ -2,20 +2,20 @@ import express from "express";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import cors from "cors";
-import { Logger } from "./utils/Logger";
+import { RestServer } from "./services/RestServer";
+import { SocketServer } from "./services/SocketServer";
 
 const app = express();
+const PORT = 3000;
 
-app.use(cors());
+app.use(cors({ origin: "*" }));
+app.use(express.json());
+
 const httpServer = createServer(app);
-const io = new Server(httpServer);
+const io = new Server(httpServer, { cors: { origin: "*" } });
 
-app.get("/", (_, res) => {
-	res.send("Hello world!");
-});
+new RestServer(app);
 
-io.on("connection", () => {
-	Logger.info("Socket connected");
-});
+new SocketServer(io);
 
-httpServer.listen(3000);
+httpServer.listen(PORT);
