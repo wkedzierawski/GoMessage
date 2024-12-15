@@ -9,13 +9,19 @@ import path from "path";
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(cors({ origin: "*" }));
+const viteLocalHost = "http://localhost:5173";
+
+app.use(cors({ origin: viteLocalHost }));
 app.use(express.json());
 
 app.use(express.static(path.join(__dirname, "..", "app_build")));
 
 const httpServer = createServer(app);
-const io = new Server(httpServer);
+const io = new Server(httpServer, {
+	cors: {
+		origin: viteLocalHost,
+	},
+});
 
 new RestServer(app);
 
