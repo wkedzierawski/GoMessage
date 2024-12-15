@@ -27,6 +27,7 @@ export class SocketServer {
 			};
 
 			on(SocketEvent.sendMessage, (payload) => {
+				Logger.info("Send message event");
 				if (!payload?.chatId) {
 					return;
 				}

@@ -4,22 +4,22 @@ import { Server } from "socket.io";
 import cors from "cors";
 import { RestServer } from "./services/RestServer";
 import { SocketServer } from "./services/SocketServer";
-import path from "path";
+import { join } from "path";
+import { envs } from "./utils/Envs";
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const { PORT, VITE_SERVER, SIZE_LIMIT } = envs();
 
-const viteLocalHost = "http://localhost:5173";
-
-app.use(cors({ origin: viteLocalHost }));
+app.use(cors({ origin: VITE_SERVER }));
 app.use(express.json());
 
-app.use(express.static(path.join(__dirname, "..", "app_build")));
+app.use(express.static(join(__dirname, "..", "app_build")));
 
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
+	maxHttpBufferSize: Number(`${SIZE_LIMIT}e8`),
 	cors: {
-		origin: viteLocalHost,
+		origin: VITE_SERVER,
 	},
 });
 

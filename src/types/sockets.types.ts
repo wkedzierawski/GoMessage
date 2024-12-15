@@ -15,6 +15,6 @@ export type SocketPayload = {
 		date: string;
 		message: string;
 		chatId: string;
-		images: File[];
+		files: File[];
 	};
 };
