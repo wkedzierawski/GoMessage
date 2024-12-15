@@ -15,7 +15,7 @@ const initMessage = (chatId: string | undefined): MessageProps[] => [
 		date: new Date().toISOString(),
 		message: `Entered chat: ${chatId}`,
 		messageId: "0",
-		images: [],
+		files: [],
 		self: false,
 	},
 ];
@@ -53,16 +53,18 @@ export const Chat = () => {
 		return messages.map((item) => <Message key={item.messageId} {...item} />);
 	}, [messages]);
 
-	const sendMessage = (message: string, images: File[]) => {
+	const sendMessage = (message: string, files: File[]) => {
 		if (!chatId) {
 			return;
 		}
+
+		console.log("Send video", files);
 
 		AppSocket.emit(SocketEvent.sendMessage, {
 			date: new Date().toISOString(),
 			message,
 			chatId,
-			images,
+			files,
 		});
 	};
 

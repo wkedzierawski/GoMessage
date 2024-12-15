@@ -1,20 +1,14 @@
-import {
-	Box,
-	Button,
-	Container,
-	TextField,
-	TextFieldProps,
-} from "@mui/material";
+import { Box, Button, TextField, TextFieldProps } from "@mui/material";
 import { ClipboardEvent, FormEvent, useRef, useState } from "react";
-import { ClipboardImage } from "./ClipboardImage";
 import { grey } from "@mui/material/colors";
+import { ClipboardElement } from "../Clipboard/ClipboardElement";
 
 type Props = Omit<TextFieldProps, "onSubmit"> & {
 	onSubmit: (message: string, images: File[]) => void;
 };
 
 export const Input = ({ onSubmit, ...textFieldProps }: Props) => {
-	const [images, setImages] = useState<File[]>([]);
+	const [files, setFiles] = useState<File[]>([]);
 
 	const textFieldRef = useRef<HTMLInputElement | null>(null);
 
@@ -23,15 +17,15 @@ export const Input = ({ onSubmit, ...textFieldProps }: Props) => {
 
 		const text = textFieldRef.current?.value ?? "";
 
-		if (text.length || images.length) {
-			onSubmit(text, images);
+		if (text.length || files.length) {
+			onSubmit(text, files);
 		}
 
 		if (textFieldRef.current) {
 			textFieldRef.current.value = "";
 		}
 
-		setImages([]);
+		setFiles([]);
 	};
 
 	const handlePaste = async (e: ClipboardEvent<HTMLDivElement>) => {
@@ -42,14 +36,7 @@ export const Input = ({ onSubmit, ...textFieldProps }: Props) => {
 			}
 
 			for (const file of e.clipboardData.files) {
-				const isImage = file.type.startsWith("image/");
-				if (!isImage) {
-					return;
-				}
-				const buffer = await file.arrayBuffer();
-				console.log({ file, isImage, buffer });
-
-				setImages((prev) => [...prev, file]);
+				setFiles((prev) => [...prev, file]);
 			}
 		} catch (err) {
 			console.error("Failed to read clipboard:", err);
@@ -57,80 +44,75 @@ export const Input = ({ onSubmit, ...textFieldProps }: Props) => {
 	};
 
 	return (
-		<>
-			<form
+		<form
+			style={{
+				display: "flex",
+				marginTop: "auto",
+				marginBottom: "25px",
+				flexDirection: "column",
+				padding: "0 25px",
+			}}
+			onSubmit={_onSubmit}
+		>
+			<Box
 				style={{
 					display: "flex",
-					marginTop: "auto",
-					marginBottom: "25px",
-					flexDirection: "column",
-					padding: "0 25px",
+					marginBottom: 15,
+					backgroundColor: grey[700],
+					borderRadius: 5,
+					width: "fit-content",
+					flexWrap: "wrap",
+					maxHeight: 150,
+					overflowY: "scroll",
 				}}
-				onSubmit={_onSubmit}
+			>
+				{files.map((file) => (
+					<ClipboardElement key={file.lastModified} file={file} height={120} />
+				))}
+			</Box>
+			<Box
+				style={{
+					display: "flex",
+				}}
 			>
 				<Box
-					style={{
+					style={{ paddingRight: 10, paddingLeft: 0 }}
+					sx={{
+						flex: 1,
+						marginTop: "auto",
+						marginBottom: 25,
 						display: "flex",
-						marginBottom: 15,
-						backgroundColor: grey[700],
-						borderRadius: 5,
-						width: "fit-content",
-						flexWrap: "wrap",
-						maxHeight: 150,
+						maxHeight: 100,
+						margin: 0,
+						padding: 0,
 						overflowY: "scroll",
+						"&::-webkit-scrollbar": {
+							display: "none",
+						},
 					}}
 				>
-					{images.map((file) => (
-						<ClipboardImage key={file.lastModified} file={file} />
-					))}
-				</Box>
-				<Box
-					style={{
-						display: "flex",
-					}}
-				>
-					<Container
-						style={{ paddingRight: 10, paddingLeft: 0 }}
+					<TextField
+						onPaste={handlePaste}
+						inputRef={textFieldRef}
 						sx={{
-							marginTop: "auto",
-							marginBottom: 25,
 							display: "flex",
-							maxHeight: 100,
-							margin: 0,
-							padding: 0,
-							overflowY: "scroll",
-							"&::-webkit-scrollbar": {
-								display: "none",
+							flex: 10,
+							color: "white",
+							input: {
+								color: "whitesmoke",
 							},
 						}}
-					>
-						<TextField
-							onPaste={handlePaste}
-							inputRef={textFieldRef}
-							sx={{
-								display: "flex",
-								flex: 10,
-								color: "white",
-								input: {
-									color: "whitesmoke",
-								},
-							}}
-							autoComplete="off"
-							id="filled-basic"
-							variant="outlined"
-							size="small"
-							{...textFieldProps}
-						/>
-					</Container>
-					<Button
-						onClick={() => _onSubmit()}
-						sx={{ flex: 1 }}
-						variant="contained"
-					>
-						Send
-					</Button>
+						autoComplete="off"
+						id="filled-basic"
+						variant="outlined"
+						size="small"
+						{...textFieldProps}
+					/>
 				</Box>
-			</form>
-		</>
+				<Button onClick={() => _onSubmit()} variant="contained">
+					Send
+				</Button>
+			</Box>
+		</form>
 	);
 };

@@ -2,25 +2,31 @@ import { Box, Paper, Typography } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import dayjs from "dayjs";
 import { useEffect, useRef } from "react";
-import { ClipboardImage } from "./ClipboardImage";
 import { If } from "../../utils/If";
+import { ClipboardElement } from "../Clipboard/ClipboardElement";
 
 export type MessageProps = {
 	messageId: string;
 	date: string;
 	message: string;
 	self: boolean;
-	images: File[];
+	files: (File | ArrayBuffer)[];
 };
 
-export const Message = ({ message, self, date, images }: MessageProps) => {
+export const Message = ({
+	message,
+	self,
+	date,
+	files,
+	messageId,
+}: MessageProps) => {
 	const ref = useRef<HTMLDivElement | null>(null);
 
 	useEffect(() => {
-		console.log({ images });
-
 		ref.current?.scrollIntoView({ behavior: "smooth" });
-	}, [images]);
+	}, []);
+
+	console.log(files);
 
 	return (
 		<Paper
@@ -40,9 +46,14 @@ export const Message = ({ message, self, date, images }: MessageProps) => {
 				flexDirection: "column",
 			}}
 		>
-			{images.map((file) => (
-				<ClipboardImage file={file} />
+			{files.map((file, index) => (
+				<ClipboardElement
+					key={`${messageId}-${index}-file`}
+					file={file}
+					height={300}
+				/>
 			))}
+
 			<Box sx={{ display: "flex", width: "100%" }}>
 				<If condition={message}>
 					<Typography
@@ -65,7 +76,7 @@ export const Message = ({ message, self, date, images }: MessageProps) => {
 				}}
 				variant="caption"
 			>
-				{dayjs(date).format("HH:mm:ss")}
+				{dayjs(date).format("HH:mm")}
 			</Typography>
 		</Paper>
 	);
