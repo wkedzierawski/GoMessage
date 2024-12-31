@@ -97,7 +97,9 @@ const useStyles = createUseStyles({
 		"@media (max-width:600px)": {
 			position: "absolute",
 			width: "100vw",
-			height: "100vh",
+			height: "100dvh",
+			top: 0,
+			transition: "300ms ease height",
 		},
 	},
 });
