@@ -94,5 +94,10 @@ const useStyles = createUseStyles({
 		maxWidth: "920px",
 		background: grey[800],
 		alignItems: "space-between",
+		"@media (max-width:600px)": {
+			position: "absolute",
+			width: "100vw",
+			height: "100vh",
+		},
 	},
 });
