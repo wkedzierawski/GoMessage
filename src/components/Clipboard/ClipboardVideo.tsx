@@ -1,8 +1,9 @@
-import { Box, IconButton } from "@mui/material";
+import { Box } from "@mui/material";
 import { Files } from "../../utils/file";
 import { ClipboardElementProps } from "./ClipboardElement.types";
-import { FaTrash } from "react-icons/fa";
 import { createUseStyles } from "react-jss";
+import { ClipboardDeleteButton } from "./ClipboardDeleteButton";
+import { If } from "../../utils/If";
 
 export const ClipboardVideo = ({
 	file,
@@ -24,11 +25,9 @@ export const ClipboardVideo = ({
 				style={{ maxHeight }}
 				src={Files.makeSource(file)}
 			/>
-			{!!onClickRemove && file instanceof File && (
-				<IconButton className={styles.button} onClick={onClickRemove}>
-					<FaTrash size={15} />
-				</IconButton>
-			)}
+			<If condition={file instanceof File}>
+				<ClipboardDeleteButton onClick={onClickRemove} />
+			</If>
 		</Box>
 	);
 };
@@ -36,6 +35,7 @@ export const ClipboardVideo = ({
 const useStyles = createUseStyles({
 	container: {
 		position: "relative",
+		flex: 1,
 	},
 	video: {
 		width: "95%",

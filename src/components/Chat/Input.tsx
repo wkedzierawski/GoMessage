@@ -145,6 +145,7 @@ const useStyles = createUseStyles({
 		flexWrap: "wrap",
 		maxHeight: 150,
 		overflowY: "scroll",
+		gap: 5,
 	},
 	inputContainer: {
 		display: "flex",
