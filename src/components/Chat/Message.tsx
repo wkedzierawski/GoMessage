@@ -6,6 +6,7 @@ import { If } from "../../utils/If";
 import { ClipboardElement } from "../Clipboard/ClipboardElement";
 import { createUseStyles } from "react-jss";
 import { SocketFile } from "../../services/AppSocket";
+import Markdown from "react-markdown";
 
 export type MessageProps = {
 	messageId: string;
@@ -55,14 +56,8 @@ export const Message = ({
 
 			<If condition={message}>
 				<Box className={styles.textContainer}>
-					<Typography
-						sx={{
-							padding: "10px 20px 0 20px",
-							wordBreak: "break-word",
-							maxWidth: "650px",
-						}}
-					>
-						{message}
+					<Typography className={styles.message} component="div">
+						<Markdown>{message}</Markdown>
 					</Typography>
 				</Box>
 			</If>
@@ -91,5 +86,10 @@ const useStyles = createUseStyles({
 		marginBottom: "2px",
 		marginRight: "10px",
 		marginLeft: "auto",
+	},
+	message: {
+		padding: "10px 20px 0 20px",
+		wordBreak: "break-word",
+		maxWidth: "650px",
 	},
 });
