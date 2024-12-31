@@ -1,20 +1,17 @@
 import { Box } from "@mui/material";
-import { Files } from "../../utils/file";
-import { useState } from "react";
 import { ClipboardElementProps } from "./ClipboardElement.types";
 import { createUseStyles } from "react-jss";
-import { classList } from "../../utils/utils";
 import { ClipboardDeleteButton } from "./ClipboardDeleteButton";
 import { If } from "../../utils/If";
+import { FaFile } from "react-icons/fa";
+import { useMemo } from "react";
+import { Files } from "../../utils/file";
 
-export const ClipboardImage = ({
+export const ClipboardFile = ({
 	file,
-	maxHeight,
 	onClickRemove: _onClickRemove,
 }: ClipboardElementProps) => {
 	const styles = useStyles();
-
-	const [loaded, setLoaded] = useState(false);
 
 	const onClickRemove = () => {
 		if (file instanceof File) {
@@ -22,14 +19,18 @@ export const ClipboardImage = ({
 		}
 	};
 
+	const text = useMemo(
+		() => (file instanceof ArrayBuffer ? Files.arrayBufferToText(file) : null),
+		[file]
+	);
 	return (
 		<Box className={styles.container}>
-			<img
-				className={classList(styles.image, loaded && styles.visible)}
-				style={{ maxHeight }}
-				src={Files.makeSource(file)}
-				onLoad={() => setLoaded(true)}
-			/>
+			<If condition={!text}>
+				<FaFile size={30} />
+			</If>
+			<If condition={text}>
+				<code> {text}</code>
+			</If>
 			<If condition={file instanceof File}>
 				<ClipboardDeleteButton onClick={onClickRemove} />
 			</If>
@@ -42,11 +43,13 @@ const useStyles = createUseStyles({
 		position: "relative",
 		flex: 1,
 	},
-	image: {
-		width: "100%",
-		opacity: 0,
+	video: {
+		width: "95%",
 	},
-	visible: {
-		opacity: 1,
+	button: {
+		display: "flex",
+		position: "absolute",
+		right: 0,
+		top: 0,
 	},
 });

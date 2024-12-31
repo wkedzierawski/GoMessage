@@ -8,6 +8,8 @@ export enum SocketEvent {
 	sendMessage = "sendMessage",
 }
 
+export type SocketFile = { content: File; type: string };
+
 export type SocketPayload = {
 	[SocketEvent.connect]: unknown;
 	[SocketEvent.reconnect]: unknown;
@@ -17,14 +19,14 @@ export type SocketPayload = {
 		date: string;
 		message: string;
 		chatId: string;
-		files: File[];
+		files: SocketFile[];
 		from: string;
 	};
 	[SocketEvent.sendMessage]: {
 		date: string;
 		message: string;
 		chatId: string;
-		files: File[];
+		files: SocketFile[];
 	};
 };
 

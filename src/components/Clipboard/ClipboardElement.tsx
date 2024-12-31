@@ -1,14 +1,17 @@
-import { memo, useState } from "react";
+import { memo } from "react";
 import { ClipboardVideo } from "./ClipboardVideo";
 import { ClipboardImage } from "./ClipboardImage";
 import { ClipboardElementProps } from "./ClipboardElement.types";
+import { ClipboardFile } from "./ClipboardFile";
 
 export const ClipboardElement = memo((props: ClipboardElementProps) => {
-	const [imageError, setImageError] = useState(false);
+	if (props.type.startsWith("image")) {
+		return <ClipboardImage {...props} />;
+	}
 
-	if (imageError) {
+	if (props.type.startsWith("video")) {
 		return <ClipboardVideo {...props} />;
 	}
 
-	return <ClipboardImage onError={() => setImageError(true)} {...props} />;
+	return <ClipboardFile {...props} />;
 });

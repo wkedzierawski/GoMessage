@@ -5,13 +5,14 @@ import { useEffect, useMemo, useRef } from "react";
 import { If } from "../../utils/If";
 import { ClipboardElement } from "../Clipboard/ClipboardElement";
 import { createUseStyles } from "react-jss";
+import { SocketFile } from "../../services/AppSocket";
 
 export type MessageProps = {
 	messageId: string;
 	date: string;
 	message: string;
 	self: boolean;
-	files: (File | ArrayBuffer)[];
+	files: SocketFile[];
 };
 
 export const Message = ({
@@ -32,8 +33,9 @@ export const Message = ({
 		return files.map((file, index) => (
 			<ClipboardElement
 				key={`${messageId}-${index}-file`}
-				file={file}
 				maxHeight={300}
+				file={file.content}
+				type={file.type}
 			/>
 		));
 	}, [files, messageId]);

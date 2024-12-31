@@ -65,7 +65,7 @@ export const Chat = () => {
 			date: new Date().toISOString(),
 			message,
 			chatId,
-			files,
+			files: files.map((file) => ({ content: file, type: file.type })),
 		});
 	};
 

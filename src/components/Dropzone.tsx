@@ -1,5 +1,6 @@
 import { ReactNode, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
+import { acceptableFiles } from "../consts";
 
 type Props = {
 	onLoad: (file: File) => void;
@@ -30,7 +31,7 @@ export const Dropzone = ({ children, onLoad, clickable = false }: Props) => {
 	const { getRootProps, getInputProps } = useDropzone({
 		onDrop,
 		noClick: !clickable,
-		accept: { "image/*": [], "video/*": [] },
+		accept: acceptableFiles,
 	});
 
 	return (

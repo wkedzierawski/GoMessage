@@ -13,6 +13,16 @@ export class Files {
 		return window.btoa(binary);
 	}
 
+	public static arrayBufferToText(buffer: ArrayBuffer) {
+		let binary = "";
+		const bytes = new Uint8Array(buffer);
+		const len = bytes.byteLength;
+		for (let i = 0; i < len; i++) {
+			binary += String.fromCharCode(bytes[i]);
+		}
+		return binary;
+	}
+
 	public static blob = (file: File | ArrayBuffer) => {
 		return file instanceof Blob ? file : new Blob([new Uint8Array(file)]);
 	};

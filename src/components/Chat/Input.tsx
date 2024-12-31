@@ -19,6 +19,7 @@ import { MdFileUpload } from "react-icons/md";
 import { Dropzone } from "../Dropzone";
 import { If } from "../../utils/If";
 import { createUseStyles } from "react-jss";
+import { acceptableFiles } from "../../consts";
 
 type Props = Omit<TextFieldProps, "onSubmit"> & {
 	onSubmit: (message: string, images: File[]) => void;
@@ -55,7 +56,17 @@ export const Input = ({ onSubmit, ...textFieldProps }: Props) => {
 			return;
 		}
 
+		const acceptableFileTypes = Object.keys(acceptableFiles);
+
 		for (const paste of e.clipboardData.files) {
+			const validType = acceptableFileTypes.some((type) =>
+				RegExp(type, "i").test(paste.type)
+			);
+
+			if (!validType) {
+				return;
+			}
+
 			setFiles((prev) => {
 				const exists = prev.some((item) => item.name === paste.name);
 				if (exists) {
@@ -78,6 +89,7 @@ export const Input = ({ onSubmit, ...textFieldProps }: Props) => {
 				file={file}
 				maxHeight={120}
 				onClickRemove={removeFile}
+				type={file.type}
 			/>
 		));
 	}, [files, removeFile]);
