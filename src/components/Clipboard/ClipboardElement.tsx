@@ -1,13 +1,9 @@
-import { useState } from "react";
+import { memo, useState } from "react";
 import { ClipboardVideo } from "./ClipboardVideo";
 import { ClipboardImage } from "./ClipboardImage";
+import { ClipboardElementProps } from "./ClipboardElement.types";
 
-type Props = {
-	file: File | ArrayBuffer;
-	height: number;
-};
-
-export const ClipboardElement = (props: Props) => {
+export const ClipboardElement = memo((props: ClipboardElementProps) => {
 	const [imageError, setImageError] = useState(false);
 
 	if (imageError) {
@@ -15,4 +11,4 @@ export const ClipboardElement = (props: Props) => {
 	}
 
 	return <ClipboardImage onError={() => setImageError(true)} {...props} />;
-};
+});

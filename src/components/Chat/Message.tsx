@@ -4,6 +4,7 @@ import dayjs from "dayjs";
 import { useEffect, useMemo, useRef } from "react";
 import { If } from "../../utils/If";
 import { ClipboardElement } from "../Clipboard/ClipboardElement";
+import { createUseStyles } from "react-jss";
 
 export type MessageProps = {
 	messageId: string;
@@ -20,6 +21,7 @@ export const Message = ({
 	files,
 	messageId,
 }: MessageProps) => {
+	const styles = useStyles();
 	const ref = useRef<HTMLDivElement | null>(null);
 
 	useEffect(() => {
@@ -31,7 +33,7 @@ export const Message = ({
 			<ClipboardElement
 				key={`${messageId}-${index}-file`}
 				file={file}
-				height={300}
+				maxHeight={300}
 			/>
 		));
 	}, [files, messageId]);
@@ -39,25 +41,18 @@ export const Message = ({
 	return (
 		<Paper
 			ref={ref}
+			className={styles.container}
 			style={{
 				marginLeft: self ? "auto" : undefined,
 				minWidth: message ? "250px" : undefined,
 			}}
-			sx={{
-				margin: "10px",
-				borderRadius: "15px",
-				width: "fit-content",
-				background: grey[900],
-				color: "whitesmoke",
-				display: "flex",
-				alignItems: "center",
-				flexDirection: "column",
-			}}
 		>
-			{renderFiles}
+			<If condition={files.length}>
+				<Box className={styles.filesContainer}>{renderFiles}</Box>
+			</If>
 
-			<Box sx={{ display: "flex", width: "100%" }}>
-				<If condition={message}>
+			<If condition={message}>
+				<Box className={styles.textContainer}>
 					<Typography
 						sx={{
 							padding: "10px 20px 0 20px",
@@ -67,19 +62,32 @@ export const Message = ({
 					>
 						{message}
 					</Typography>
-				</If>
-			</Box>
-			<Typography
-				sx={{
-					alignSelf: "flex-end",
-					marginBottom: "2px",
-					marginRight: "10px",
-					marginLeft: "auto",
-				}}
-				variant="caption"
-			>
+				</Box>
+			</If>
+			<Typography className={styles.date} variant="caption">
 				{dayjs(date).format("HH:mm")}
 			</Typography>
 		</Paper>
 	);
 };
+
+const useStyles = createUseStyles({
+	container: {
+		margin: "10px",
+		borderRadius: "15px",
+		width: "fit-content",
+		background: grey[900],
+		color: "whitesmoke",
+		display: "flex",
+		alignItems: "center",
+		flexDirection: "column",
+	},
+	filesContainer: { padding: "10px" },
+	textContainer: { display: "flex", width: "100%" },
+	date: {
+		alignSelf: "flex-end",
+		marginBottom: "2px",
+		marginRight: "10px",
+		marginLeft: "auto",
+	},
+});

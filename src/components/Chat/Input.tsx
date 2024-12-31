@@ -1,13 +1,34 @@
-import { Box, Button, TextField, TextFieldProps } from "@mui/material";
-import { ClipboardEvent, FormEvent, useMemo, useRef, useState } from "react";
+import {
+	Box,
+	Button,
+	IconButton,
+	TextField,
+	TextFieldProps,
+} from "@mui/material";
+import {
+	ClipboardEvent,
+	FormEvent,
+	useCallback,
+	useMemo,
+	useRef,
+	useState,
+} from "react";
 import { grey } from "@mui/material/colors";
 import { ClipboardElement } from "../Clipboard/ClipboardElement";
+import { MdFileUpload } from "react-icons/md";
+import { Dropzone } from "../Dropzone";
+import { If } from "../../utils/If";
+import { createUseStyles } from "react-jss";
 
 type Props = Omit<TextFieldProps, "onSubmit"> & {
 	onSubmit: (message: string, images: File[]) => void;
 };
 
+const inputColor = "whitesmoke";
+
 export const Input = ({ onSubmit, ...textFieldProps }: Props) => {
+	const styles = useStyles();
+
 	const [files, setFiles] = useState<File[]>([]);
 
 	const textFieldRef = useRef<HTMLInputElement | null>(null);
@@ -29,94 +50,129 @@ export const Input = ({ onSubmit, ...textFieldProps }: Props) => {
 	};
 
 	const handlePaste = async (e: ClipboardEvent<HTMLDivElement>) => {
-		try {
-			if (!navigator.clipboard) {
-				console.error("Clipboard API not available");
-				return;
-			}
+		if (!navigator.clipboard) {
+			console.error("Clipboard API not available");
+			return;
+		}
 
-			for (const file of e.clipboardData.files) {
-				setFiles((prev) => [...prev, file]);
-			}
-		} catch (err) {
-			console.error("Failed to read clipboard:", err);
+		for (const paste of e.clipboardData.files) {
+			setFiles((prev) => {
+				const exists = prev.some((item) => item.name === paste.name);
+				if (exists) {
+					return prev;
+				}
+
+				return [...prev, paste];
+			});
 		}
 	};
 
+	const removeFile = useCallback((file: File) => {
+		setFiles((prev) => prev.filter((item) => item !== file));
+	}, []);
+
 	const renderFiles = useMemo(() => {
 		return files.map((file) => (
-			<ClipboardElement key={file.lastModified} file={file} height={120} />
+			<ClipboardElement
+				key={file.name}
+				file={file}
+				maxHeight={120}
+				onClickRemove={removeFile}
+			/>
 		));
-	}, [files]);
+	}, [files, removeFile]);
 
 	return (
-		<form
-			style={{
-				display: "flex",
-				marginTop: "auto",
-				marginBottom: "25px",
-				flexDirection: "column",
-				padding: "0 25px",
-			}}
-			onSubmit={_onSubmit}
-		>
-			<Box
-				style={{
-					display: "flex",
-					marginBottom: 15,
-					backgroundColor: grey[700],
-					borderRadius: 5,
-					width: "fit-content",
-					flexWrap: "wrap",
-					maxHeight: 150,
-					overflowY: "scroll",
-				}}
-			>
-				{renderFiles}
-			</Box>
-			<Box
-				style={{
-					display: "flex",
-				}}
-			>
-				<Box
-					style={{ paddingRight: 10, paddingLeft: 0 }}
-					sx={{
-						flex: 1,
-						marginTop: "auto",
-						marginBottom: 25,
-						display: "flex",
-						maxHeight: 100,
-						margin: 0,
-						padding: 0,
-						overflowY: "scroll",
-						"&::-webkit-scrollbar": {
-							display: "none",
-						},
-					}}
-				>
+		<form className={styles.form} onSubmit={_onSubmit}>
+			<If condition={files.length}>
+				<Box className={styles.filesContainer}>{renderFiles}</Box>
+			</If>
+			<Box className={styles.inputContainer}>
+				<Box className={styles.textFieldWrapper}>
 					<TextField
 						onPaste={handlePaste}
 						inputRef={textFieldRef}
-						sx={{
-							display: "flex",
-							flex: 10,
-							color: "white",
-							input: {
-								color: "whitesmoke",
-							},
-						}}
+						className={styles.textField}
 						autoComplete="off"
 						id="filled-basic"
-						variant="outlined"
+						variant="filled"
 						size="small"
+						slotProps={{
+							input: {
+								style: { color: inputColor },
+								endAdornment: (
+									<div className={styles.inputEndAdornment}>
+										<Dropzone
+											onLoad={(file) => {
+												setFiles((prev) => [...prev, file]);
+											}}
+											clickable
+										>
+											<IconButton>
+												<MdFileUpload color={inputColor} />
+											</IconButton>
+										</Dropzone>
+										<Button onClick={() => _onSubmit()} variant="contained">
+											Send
+										</Button>
+									</div>
+								),
+							},
+						}}
 						{...textFieldProps}
 					/>
 				</Box>
-				<Button onClick={() => _onSubmit()} variant="contained">
-					Send
-				</Button>
 			</Box>
 		</form>
 	);
 };
+
+const useStyles = createUseStyles({
+	form: {
+		display: "flex",
+		marginTop: "auto",
+		marginBottom: "25px",
+		flexDirection: "column",
+		padding: "0 25px",
+	},
+	filesContainer: {
+		display: "flex",
+		marginBottom: 15,
+		backgroundColor: grey[700],
+		borderRadius: 5,
+		padding: 10,
+		width: "fit-content",
+		flexWrap: "wrap",
+		maxHeight: 150,
+		overflowY: "scroll",
+	},
+	inputContainer: {
+		display: "flex",
+		alignItems: "flex-end",
+	},
+	textFieldWrapper: {
+		flex: 1,
+		marginTop: "auto",
+		display: "flex",
+		maxHeight: 100,
+		margin: 0,
+		padding: 0,
+		overflowY: "scroll",
+		paddingRight: 10,
+		paddingLeft: 0,
+		"&::-webkit-scrollbar": {
+			display: "none",
+		},
+	},
+	textField: {
+		display: "flex",
+		flex: 10,
+		input: {
+			color: "whitesmoke",
+		},
+	},
+	inputEndAdornment: {
+		display: "flex",
+		gap: "15px",
+	},
+});

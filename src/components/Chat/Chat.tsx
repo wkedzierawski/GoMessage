@@ -1,4 +1,4 @@
-import { Box, Paper, styled } from "@mui/material";
+import { Box, Paper } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { useEffect, useMemo, useState } from "react";
 import { Message, MessageProps } from "./Message";
@@ -9,6 +9,7 @@ import { queryClient, QueryKey } from "../../services/Query";
 import { Status } from "./Status";
 import { useSocketConnected } from "../../hooks/useSocketConnected";
 import { useChangeEffect } from "../../hooks/useChangeEffect";
+import { createUseStyles } from "react-jss";
 
 const initMessage = (chatId: string | undefined): MessageProps[] => [
 	{
@@ -21,6 +22,8 @@ const initMessage = (chatId: string | undefined): MessageProps[] => [
 ];
 
 export const Chat = () => {
+	const styles = useStyles();
+
 	const { chatId } = useParams();
 
 	const [messages, setMessages] = useState<MessageProps[]>(initMessage(chatId));
@@ -67,7 +70,7 @@ export const Chat = () => {
 	};
 
 	return (
-		<Container>
+		<Paper className={styles.container}>
 			<Box
 				sx={{
 					overflowY: "scroll",
@@ -78,16 +81,18 @@ export const Chat = () => {
 			</Box>
 			<Input onSubmit={sendMessage} />
 			<Status connected={socketConnected} />
-		</Container>
+		</Paper>
 	);
 };
 
-const Container = styled(Paper)({
-	display: "flex",
-	flexDirection: "column",
-	height: "75vh",
-	width: "100%",
-	maxWidth: "920px",
-	background: grey[800],
-	alignItems: "space-between",
+const useStyles = createUseStyles({
+	container: {
+		display: "flex",
+		flexDirection: "column",
+		height: "75vh",
+		width: "100%",
+		maxWidth: "920px",
+		background: grey[800],
+		alignItems: "space-between",
+	},
 });

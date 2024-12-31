@@ -1,11 +1,6 @@
 export class Files {
-	public static parse = async (file: File) => {
-		// const isImage = file.type.startsWith("image/");
-		// if (!isImage) {
-		// 	return;
-		// }
-		const buffer = await file.arrayBuffer();
-		return buffer;
+	public static parse = (file: File) => {
+		return file.arrayBuffer();
 	};
 
 	public static arrayBufferToBase64(buffer: ArrayBuffer) {

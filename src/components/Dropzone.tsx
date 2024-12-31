@@ -4,9 +4,10 @@ import { useDropzone } from "react-dropzone";
 type Props = {
 	onLoad: (file: File) => void;
 	children: ReactNode;
+	clickable?: boolean;
 };
 
-export const Dropzone = ({ children, onLoad }: Props) => {
+export const Dropzone = ({ children, onLoad, clickable = false }: Props) => {
 	const onDrop = useCallback(
 		(acceptedFiles: File[]) => {
 			acceptedFiles.forEach((file: File) => {
@@ -28,7 +29,7 @@ export const Dropzone = ({ children, onLoad }: Props) => {
 
 	const { getRootProps, getInputProps } = useDropzone({
 		onDrop,
-		noClick: true,
+		noClick: !clickable,
 		accept: { "image/*": [], "video/*": [] },
 	});
 

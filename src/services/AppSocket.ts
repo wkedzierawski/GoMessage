@@ -32,7 +32,7 @@ class Socket {
 	private socket: ReturnType<typeof io>;
 
 	constructor() {
-		this.socket = io(import.meta.env.DEV ? "//localhost:3000" : "/", {
+		this.socket = io(import.meta.env.DEV ? "http://192.168.100.3:3000" : "/", {
 			reconnectionDelayMax: 10000,
 		});
 	}
