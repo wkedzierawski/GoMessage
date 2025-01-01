@@ -6,7 +6,6 @@ import { ClipboardTextFile } from "./ClipboardTextFile";
 import { ClipboardFile } from "./ClipboardFile";
 
 export const ClipboardElement = memo((props: ClipboardElementProps) => {
-	console.log(props.type);
 	if (props.type.startsWith("image")) {
 		return <ClipboardImage {...props} />;
 	}
