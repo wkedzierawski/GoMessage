@@ -10,6 +10,8 @@ import { Status } from "./Status";
 import { useSocketConnected } from "../../hooks/useSocketConnected";
 import { useChangeEffect } from "../../hooks/useChangeEffect";
 import { createUseStyles } from "react-jss";
+import { Dropzone } from "../Dropzone";
+import { useFilesStore } from "../../store/filesStore";
 
 const initMessage = (chatId: string | undefined): MessageProps[] => [
 	{
@@ -29,6 +31,8 @@ export const Chat = () => {
 	const [messages, setMessages] = useState<MessageProps[]>(initMessage(chatId));
 
 	const socketConnected = useSocketConnected();
+
+	const addFile = useFilesStore((state) => state.addFile);
 
 	useChangeEffect(() => {
 		queryClient.invalidateQueries({ queryKey: [QueryKey.chat] });
@@ -74,18 +78,20 @@ export const Chat = () => {
 	};
 
 	return (
-		<Paper className={styles.container}>
-			<Box
-				sx={{
-					overflowY: "scroll",
-					padding: "10px 0",
-				}}
-			>
-				{renderMessages}
-			</Box>
-			<Input onSubmit={sendMessage} />
-			<Status connected={socketConnected} />
-		</Paper>
+		<Dropzone className={styles.container} onLoad={addFile}>
+			<Paper className={styles.container}>
+				<Box
+					sx={{
+						overflowY: "scroll",
+						padding: "10px 0",
+					}}
+				>
+					{renderMessages}
+				</Box>
+				<Input onSubmit={sendMessage} />
+				<Status connected={socketConnected} />
+			</Paper>
+		</Dropzone>
 	);
 };
 

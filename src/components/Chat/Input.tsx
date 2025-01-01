@@ -2,23 +2,18 @@ import {
 	Box,
 	Button,
 	IconButton,
+	Skeleton,
 	TextField,
 	TextFieldProps,
 } from "@mui/material";
-import {
-	ClipboardEvent,
-	FormEvent,
-	useCallback,
-	useMemo,
-	useRef,
-	useState,
-} from "react";
+import { ClipboardEvent, FormEvent, useMemo, useRef } from "react";
 import { grey } from "@mui/material/colors";
 import { ClipboardElement } from "../Clipboard/ClipboardElement";
 import { MdFileUpload } from "react-icons/md";
 import { Dropzone } from "../Dropzone";
 import { If } from "../../utils/If";
 import { createUseStyles } from "react-jss";
+import { useFilesStore } from "../../store/filesStore";
 
 type Props = Omit<TextFieldProps, "onSubmit"> & {
 	onSubmit: (message: string, images: File[]) => void;
@@ -29,7 +24,12 @@ const inputColor = "whitesmoke";
 export const Input = ({ onSubmit, ...textFieldProps }: Props) => {
 	const styles = useStyles();
 
-	const [files, setFiles] = useState<File[]>([]);
+	const files = useFilesStore((state) => state.files);
+	const addFile = useFilesStore((state) => state.addFile);
+	const clearFiles = useFilesStore((state) => state.clearFiles);
+	const removeFile = useFilesStore((state) => state.removeFile);
+
+	const skeletons = useFilesStore((state) => state.skeletons);
 
 	const textFieldRef = useRef<HTMLInputElement | null>(null);
 
@@ -46,7 +46,7 @@ export const Input = ({ onSubmit, ...textFieldProps }: Props) => {
 			textFieldRef.current.value = "";
 		}
 
-		setFiles([]);
+		clearFiles();
 	};
 
 	const handlePaste = async (e: ClipboardEvent<HTMLDivElement>) => {
@@ -56,20 +56,14 @@ export const Input = ({ onSubmit, ...textFieldProps }: Props) => {
 		}
 
 		for (const paste of e.clipboardData.files) {
-			setFiles((prev) => {
-				const exists = prev.some((item) => item.name === paste.name);
-				if (exists) {
-					return prev;
-				}
+			const exists = files.some((item) => item.name === paste.name);
+			if (exists) {
+				continue;
+			}
 
-				return [...prev, paste];
-			});
+			addFile(paste);
 		}
 	};
-
-	const removeFile = useCallback((file: File) => {
-		setFiles((prev) => prev.filter((item) => item !== file));
-	}, []);
 
 	const renderFiles = useMemo(() => {
 		return files.map((file) => (
@@ -85,11 +79,30 @@ export const Input = ({ onSubmit, ...textFieldProps }: Props) => {
 		));
 	}, [files, removeFile]);
 
+	const renderSkeletons = useMemo(() => {
+		return Array(skeletons)
+			.fill(null)
+			.map((_, index) => (
+				<Skeleton
+					key={index}
+					variant="rectangular"
+					animation="wave"
+					width={200}
+					height={120}
+				/>
+			));
+	}, [skeletons]);
+
 	return (
 		<form className={styles.form} onSubmit={_onSubmit}>
-			<If condition={files.length}>
-				<Box className={styles.filesContainer}>{renderFiles}</Box>
-			</If>
+			<Box className={styles.filesWrapper}>
+				<If condition={files.length}>
+					<Box className={styles.filesContainer}>{renderFiles}</Box>
+				</If>
+				<If condition={skeletons}>
+					<Box className={styles.skeletonsContainer}>{renderSkeletons}</Box>
+				</If>
+			</Box>
 			<Box className={styles.inputContainer}>
 				<Box className={styles.textFieldWrapper}>
 					<TextField
@@ -105,12 +118,7 @@ export const Input = ({ onSubmit, ...textFieldProps }: Props) => {
 								style: { color: inputColor },
 								endAdornment: (
 									<div className={styles.inputEndAdornment}>
-										<Dropzone
-											onLoad={(file) => {
-												setFiles((prev) => [...prev, file]);
-											}}
-											clickable
-										>
+										<Dropzone onLoad={addFile} clickable>
 											<IconButton>
 												<MdFileUpload color={inputColor} />
 											</IconButton>
@@ -138,6 +146,10 @@ const useStyles = createUseStyles({
 		flexDirection: "column",
 		padding: "0 25px",
 	},
+	filesWrapper: {
+		display: "flex",
+		gap: 5,
+	},
 	filesContainer: {
 		display: "flex",
 		marginBottom: 15,
@@ -147,6 +159,17 @@ const useStyles = createUseStyles({
 		width: "fit-content",
 		flexWrap: "wrap",
 		maxHeight: 150,
+		overflowY: "scroll",
+		gap: 5,
+	},
+	skeletonsContainer: {
+		display: "flex",
+		marginBottom: 15,
+		backgroundColor: grey[700],
+		borderRadius: 5,
+		padding: 10,
+		width: "fit-content",
+		flexWrap: "wrap",
 		overflowY: "scroll",
 		gap: 5,
 	},
