@@ -8,16 +8,13 @@ import { useMemo } from "react";
 import { Files } from "../../utils/file";
 import { useFilesStore } from "../../store/filesStore";
 
-export const ClipboardTextFile = ({
-	file,
-	onClickRemove: _onClickRemove,
-}: ClipboardElementProps) => {
+export const ClipboardTextFile = ({ file }: ClipboardElementProps) => {
 	const styles = useStyles();
 	const removeFile = useFilesStore((state) => state.removeFile);
 
 	const onClickRemove = () => {
 		if (file instanceof File) {
-			_onClickRemove?.(file);
+			removeFile?.(file);
 		}
 	};
 
@@ -28,7 +25,7 @@ export const ClipboardTextFile = ({
 	return (
 		<Box className={styles.container}>
 			<If condition={!text}>
-				<FaFile size={30} />
+				<FaFile size={120} />
 			</If>
 			<If condition={text}>
 				<code> {text}</code>

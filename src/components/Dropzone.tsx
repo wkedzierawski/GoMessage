@@ -21,10 +21,6 @@ export const Dropzone = ({
 
 	const onDrop = useCallback(
 		(acceptedFiles: File[]) => {
-			if (clickable) {
-				return;
-			}
-
 			acceptedFiles.forEach((file: File) => {
 				const reader = new FileReader();
 
@@ -43,7 +39,7 @@ export const Dropzone = ({
 				reader.readAsArrayBuffer(file);
 			});
 		},
-		[clickable, onLoad, removeSkeleton, updateSkeleton]
+		[onLoad, removeSkeleton, updateSkeleton]
 	);
 
 	const onDropAccepted = useCallback(
@@ -58,6 +54,7 @@ export const Dropzone = ({
 	const { getRootProps, getInputProps } = useDropzone({
 		onDrop,
 		onDropAccepted: onDropAccepted,
+		noDragEventsBubbling: true,
 		noClick: !clickable,
 	});
 
