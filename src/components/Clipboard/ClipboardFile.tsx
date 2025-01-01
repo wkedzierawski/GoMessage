@@ -6,19 +6,20 @@ import { If } from "../../utils/If";
 import { FaFileZipper } from "react-icons/fa6";
 import { AppTooltip } from "../Chat/AppTooltip";
 import { DownloadButton } from "../Chat/DownloadButton";
+import { useFilesStore } from "../../store/filesStore";
 
 export const ClipboardFile = ({
 	file,
 	name,
 	type,
 	preview,
-	onClickRemove: _onClickRemove,
 }: ClipboardElementProps) => {
 	const styles = useStyles();
+	const removeFile = useFilesStore((state) => state.removeFile);
 
 	const onClickRemove = () => {
 		if (file instanceof File) {
-			_onClickRemove?.(file);
+			removeFile(file);
 		}
 	};
 

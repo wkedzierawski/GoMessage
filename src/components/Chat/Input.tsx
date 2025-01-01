@@ -1,6 +1,7 @@
 import {
 	Box,
 	Button,
+	CircularProgress,
 	IconButton,
 	Skeleton,
 	TextField,
@@ -27,7 +28,6 @@ export const Input = ({ onSubmit, ...textFieldProps }: Props) => {
 	const files = useFilesStore((state) => state.files);
 	const addFile = useFilesStore((state) => state.addFile);
 	const clearFiles = useFilesStore((state) => state.clearFiles);
-	const removeFile = useFilesStore((state) => state.removeFile);
 
 	const skeletons = useFilesStore((state) => state.skeletons);
 
@@ -71,27 +71,30 @@ export const Input = ({ onSubmit, ...textFieldProps }: Props) => {
 				key={file.name}
 				file={file}
 				maxHeight={120}
-				onClickRemove={removeFile}
 				type={file.type}
 				name={file.name}
 				preview
 			/>
 		));
-	}, [files, removeFile]);
+	}, [files]);
 
 	const renderSkeletons = useMemo(() => {
-		return Array(skeletons)
-			.fill(null)
-			.map((_, index) => (
+		return skeletons.map((item) => (
+			<Box key={item.name} className={styles.skeletonContainer}>
 				<Skeleton
-					key={index}
 					variant="rectangular"
 					animation="wave"
 					width={200}
 					height={120}
+				></Skeleton>
+				<CircularProgress
+					className={styles.skeletonProgress}
+					variant="determinate"
+					value={item.progress}
 				/>
-			));
-	}, [skeletons]);
+			</Box>
+		));
+	}, [skeletons, styles.skeletonContainer, styles.skeletonProgress]);
 
 	return (
 		<form className={styles.form} onSubmit={_onSubmit}>
@@ -99,7 +102,7 @@ export const Input = ({ onSubmit, ...textFieldProps }: Props) => {
 				<If condition={files.length}>
 					<Box className={styles.filesContainer}>{renderFiles}</Box>
 				</If>
-				<If condition={skeletons}>
+				<If condition={skeletons.length}>
 					<Box className={styles.skeletonsContainer}>{renderSkeletons}</Box>
 				</If>
 			</Box>
@@ -172,6 +175,14 @@ const useStyles = createUseStyles({
 		flexWrap: "wrap",
 		overflowY: "scroll",
 		gap: 5,
+	},
+	skeletonContainer: {
+		position: "relative",
+	},
+	skeletonProgress: {
+		position: "absolute",
+		left: "40%",
+		top: "35%",
 	},
 	inputContainer: {
 		display: "flex",

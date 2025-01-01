@@ -6,6 +6,7 @@ import { If } from "../../utils/If";
 import { useBlob } from "../../hooks/useBlob";
 import { AppTooltip } from "../Chat/AppTooltip";
 import { DownloadButton } from "../Chat/DownloadButton";
+import { useFilesStore } from "../../store/filesStore";
 
 export const ClipboardVideo = ({
 	file,
@@ -13,15 +14,15 @@ export const ClipboardVideo = ({
 	type,
 	maxHeight,
 	preview,
-	onClickRemove: _onClickRemove,
 }: ClipboardElementProps) => {
 	const styles = useStyles();
 
 	const source = useBlob(file);
+	const removeFile = useFilesStore((state) => state.removeFile);
 
 	const onClickRemove = () => {
 		if (file instanceof File) {
-			_onClickRemove?.(file);
+			removeFile(file);
 		}
 	};
 

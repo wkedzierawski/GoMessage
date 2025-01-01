@@ -17,6 +17,7 @@ export const Dropzone = ({
 }: Props) => {
 	const addSkeleton = useFilesStore((state) => state.addSkeleton);
 	const removeSkeleton = useFilesStore((state) => state.removeSkeleton);
+	const updateSkeleton = useFilesStore((state) => state.updateSkeleton);
 
 	const onDrop = useCallback(
 		(acceptedFiles: File[]) => {
@@ -27,24 +28,36 @@ export const Dropzone = ({
 			acceptedFiles.forEach((file: File) => {
 				const reader = new FileReader();
 
-				reader.onabort = () => removeSkeleton();
-				reader.onerror = () => removeSkeleton();
+				reader.onabort = () => removeSkeleton(file.name);
+				reader.onerror = () => removeSkeleton(file.name);
 				reader.onload = () => {
-					removeSkeleton();
+					removeSkeleton(file.name);
 					onLoad(file);
 				};
 				reader.onprogress = (event) => {
-					console.log(`Progress ${event.loaded} / ${event.total}`);
+					updateSkeleton({
+						name: file.name,
+						progress: Math.floor((event.loaded / event.total) * 100),
+					});
 				};
 				reader.readAsArrayBuffer(file);
 			});
 		},
-		[clickable, onLoad, removeSkeleton]
+		[clickable, onLoad, removeSkeleton, updateSkeleton]
+	);
+
+	const onDropAccepted = useCallback(
+		(files: File[]) => {
+			files.forEach((file) => {
+				addSkeleton({ name: file.name, progress: 0 });
+			});
+		},
+		[addSkeleton]
 	);
 
 	const { getRootProps, getInputProps } = useDropzone({
 		onDrop,
-		onDropAccepted: addSkeleton,
+		onDropAccepted: onDropAccepted,
 		noClick: !clickable,
 	});
 

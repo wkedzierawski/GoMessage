@@ -6,12 +6,14 @@ import { If } from "../../utils/If";
 import { FaFile } from "react-icons/fa";
 import { useMemo } from "react";
 import { Files } from "../../utils/file";
+import { useFilesStore } from "../../store/filesStore";
 
 export const ClipboardTextFile = ({
 	file,
 	onClickRemove: _onClickRemove,
 }: ClipboardElementProps) => {
 	const styles = useStyles();
+	const removeFile = useFilesStore((state) => state.removeFile);
 
 	const onClickRemove = () => {
 		if (file instanceof File) {
