@@ -37,6 +37,7 @@ export const Message = ({
 				maxHeight={300}
 				file={file.content}
 				type={file.type}
+				name={file.name}
 			/>
 		));
 	}, [files, messageId]);

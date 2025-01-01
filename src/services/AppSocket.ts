@@ -8,7 +8,7 @@ export enum SocketEvent {
 	sendMessage = "sendMessage",
 }
 
-export type SocketFile = { content: File; type: string };
+export type SocketFile = { content: File; type: string; name: string };
 
 export type SocketPayload = {
 	[SocketEvent.connect]: unknown;

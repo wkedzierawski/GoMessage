@@ -1,4 +1,5 @@
 import { IconButton } from "@mui/material";
+import { red } from "@mui/material/colors";
 import { FaTrash } from "react-icons/fa";
 import { createUseStyles } from "react-jss";
 
@@ -23,5 +24,9 @@ const useStyles = createUseStyles({
 		right: 0,
 		top: 0,
 		color: "whitesmoke",
+		transition: "300ms ease color",
+		"&:hover": {
+			color: red[500],
+		},
 	},
 });

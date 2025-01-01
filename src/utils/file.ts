@@ -27,6 +27,12 @@ export class Files {
 		return file instanceof Blob ? file : new Blob([new Uint8Array(file)]);
 	};
 
-	public static makeSource = (file: File | ArrayBuffer) =>
-		URL.createObjectURL(Files.blob(file));
+	public static makeSource = (file: File | ArrayBuffer) => {
+		const source = URL.createObjectURL(Files.blob(file));
+		const remove = () => this.revokeSource(source);
+
+		return { source, remove };
+	};
+
+	public static revokeSource = (url: string) => URL.revokeObjectURL(url);
 }

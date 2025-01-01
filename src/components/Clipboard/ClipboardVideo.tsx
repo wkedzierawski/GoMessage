@@ -1,30 +1,42 @@
 import { Box } from "@mui/material";
-import { Files } from "../../utils/file";
 import { ClipboardElementProps } from "./ClipboardElement.types";
 import { createUseStyles } from "react-jss";
 import { ClipboardDeleteButton } from "./ClipboardDeleteButton";
 import { If } from "../../utils/If";
+import { useBlob } from "../../hooks/useBlob";
+import { AppTooltip } from "../Chat/AppTooltip";
+import { DownloadButton } from "../Chat/DownloadButton";
 
 export const ClipboardVideo = ({
 	file,
+	name,
+	type,
 	maxHeight,
+	preview,
 	onClickRemove: _onClickRemove,
 }: ClipboardElementProps) => {
 	const styles = useStyles();
+
+	const source = useBlob(file);
 
 	const onClickRemove = () => {
 		if (file instanceof File) {
 			_onClickRemove?.(file);
 		}
 	};
+
 	return (
 		<Box className={styles.container}>
-			<video
-				controls
-				className={styles.video}
-				style={{ maxHeight }}
-				src={Files.makeSource(file)}
-			/>
+			<AppTooltip title={name}>
+				<video
+					controls
+					className={styles.video}
+					style={{ maxHeight }}
+					src={source}
+				/>
+			</AppTooltip>
+			<DownloadButton visible={!preview} file={file} name={name} type={type} />
+
 			<If condition={file instanceof File}>
 				<ClipboardDeleteButton onClick={onClickRemove} />
 			</If>

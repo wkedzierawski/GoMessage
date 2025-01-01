@@ -2,32 +2,9 @@
 	box-sizing: border-box;
 	margin: 0;
 	padding: 0;
-}
-
-.visible-scrollbar,
-.invisible-scrollbar {
-	display: block;
-	width: 10em;
-	overflow: auto;
-	height: 2em;
-	padding: 1em;
-	margin: 1em auto;
-	outline: 2px dashed cornflowerblue;
+	scrollbar-width: none;
 }
 
 ::-webkit-scrollbar {
 	display: none;
-}
-
-/* Demonstrate a "mostly customized" scrollbar
- * (won't be visible otherwise if width/height is specified) */
-::-webkit-scrollbar {
-	width: 5px;
-	height: 8px;
-	background-color: #aaa; /* or add it to the track */
-}
-
-/* Add a thumb */
-::-webkit-scrollbar-thumb {
-	background: #000;
 }

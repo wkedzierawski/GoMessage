@@ -3,15 +3,12 @@ import { ClipboardElementProps } from "./ClipboardElement.types";
 import { createUseStyles } from "react-jss";
 import { ClipboardDeleteButton } from "./ClipboardDeleteButton";
 import { If } from "../../utils/If";
-import { FaFileZipper } from "react-icons/fa6";
-import { AppTooltip } from "../Chat/AppTooltip";
-import { DownloadButton } from "../Chat/DownloadButton";
+import { FaFile } from "react-icons/fa";
+import { useMemo } from "react";
+import { Files } from "../../utils/file";
 
-export const ClipboardFile = ({
+export const ClipboardTextFile = ({
 	file,
-	name,
-	type,
-	preview,
 	onClickRemove: _onClickRemove,
 }: ClipboardElementProps) => {
 	const styles = useStyles();
@@ -22,15 +19,18 @@ export const ClipboardFile = ({
 		}
 	};
 
+	const text = useMemo(
+		() => (file instanceof ArrayBuffer ? Files.arrayBufferToText(file) : null),
+		[file]
+	);
 	return (
 		<Box className={styles.container}>
-			<AppTooltip title={name}>
-				<Box>
-					<FaFileZipper size={"100%"} />
-				</Box>
-			</AppTooltip>
-			<br />
-			<DownloadButton visible={!preview} file={file} name={name} type={type} />
+			<If condition={!text}>
+				<FaFile size={30} />
+			</If>
+			<If condition={text}>
+				<code> {text}</code>
+			</If>
 			<If condition={file instanceof File}>
 				<ClipboardDeleteButton onClick={onClickRemove} />
 			</If>
@@ -42,12 +42,14 @@ const useStyles = createUseStyles({
 	container: {
 		position: "relative",
 		flex: 1,
-		maxWidth: "100px",
-		display: "flex",
-		flexDirection: "column",
-		alignItems: "center",
 	},
-	text: {
-		maxWidth: "98%",
+	video: {
+		width: "95%",
+	},
+	button: {
+		display: "flex",
+		position: "absolute",
+		right: 0,
+		top: 0,
 	},
 });

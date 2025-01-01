@@ -1,6 +1,5 @@
 import { ReactNode, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
-import { acceptableFiles } from "../consts";
 
 type Props = {
 	onLoad: (file: File) => void;
@@ -18,9 +17,6 @@ export const Dropzone = ({ children, onLoad, clickable = false }: Props) => {
 				reader.onerror = () => console.log("file reading has failed");
 				reader.onload = () => {
 					onLoad(file);
-					// Do whatever you want with the file contents
-					const binaryStr = reader.result;
-					console.log(binaryStr);
 				};
 				reader.readAsArrayBuffer(file);
 			});
@@ -31,7 +27,6 @@ export const Dropzone = ({ children, onLoad, clickable = false }: Props) => {
 	const { getRootProps, getInputProps } = useDropzone({
 		onDrop,
 		noClick: !clickable,
-		accept: acceptableFiles,
 	});
 
 	return (
