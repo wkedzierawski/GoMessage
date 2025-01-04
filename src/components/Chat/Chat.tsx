@@ -13,6 +13,7 @@ import { createUseStyles } from "react-jss";
 import { Dropzone } from "../Dropzone";
 import { useFilesStore } from "../../store/filesStore";
 import { generateUsername } from "unique-username-generator";
+import { OnlineCounter } from "./OnlineCounter";
 
 export const Chat = () => {
 	const username = useRef(generateUsername("-")).current;
@@ -44,7 +45,7 @@ export const Chat = () => {
 			return;
 		}
 
-		const remove = AppSocket.on(chatId as SocketEvent.onMessage, (payload) => {
+		const remove = AppSocket.on(SocketEvent.onMessage, (payload) => {
 			if (!payload) {
 				return;
 			}
@@ -84,6 +85,7 @@ export const Chat = () => {
 	return (
 		<Dropzone className={styles.container} onLoad={addFile}>
 			<Paper className={styles.container}>
+				<OnlineCounter />
 				<Box
 					sx={{
 						overflowY: "scroll",
@@ -101,6 +103,7 @@ export const Chat = () => {
 
 const useStyles = createUseStyles({
 	container: {
+		position: "relative",
 		display: "flex",
 		flexDirection: "column",
 		height: "75vh",

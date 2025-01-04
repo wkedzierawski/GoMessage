@@ -5,6 +5,7 @@ export enum SocketEvent {
 	reconnect = "reconnect",
 	disconnect = "disconnect",
 	join = "join",
+	online = "online",
 	onMessage = "onMessage",
 	sendMessage = "sendMessage",
 }
@@ -21,6 +22,7 @@ export type SocketPayload = {
 	[SocketEvent.reconnect]: unknown;
 	[SocketEvent.disconnect]: unknown;
 	[SocketEvent.join]: User;
+	[SocketEvent.online]: number;
 	[SocketEvent.onMessage]: {
 		messageId: string;
 		date: string;
