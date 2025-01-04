@@ -1,6 +1,6 @@
 import { DefaultEventsMap, Server } from "socket.io";
 import { Logger } from "../utils/Logger";
-import { SocketEvent, SocketPayload } from "../types/sockets.types";
+import { SocketEvent, SocketPayload, User } from "../types/sockets.types";
 import { v4 as uuidv4 } from "uuid";
 
 export class SocketServer {
@@ -18,6 +18,7 @@ export class SocketServer {
 
 		this.io.on("connection", (socket) => {
 			Logger.info("Socket connected", socket.id);
+			let user: User | null = null;
 
 			const on = <T extends SocketEvent>(
 				event: T,
@@ -49,16 +50,39 @@ export class SocketServer {
 				if (!chatId || !username) {
 					return;
 				}
-				Logger.info(`User ${username} joined ${chatId}`);
+				user = { chatId, username, ...rest };
+				const message = `### 🟢 **${username}** joined`;
+
+				Logger.info(message);
 				emit(chatId as SocketEvent.onMessage, {
 					date: new Date().toString(),
-					message: `User **${username}** joined chat ${chatId}`,
+					message,
 					chatId,
 					files: [],
 					messageId: uuidv4(),
 					from: "Server",
 					username: "Server",
 					...rest,
+				});
+			});
+
+			on(SocketEvent.disconnect, () => {
+				if (!user) {
+					return;
+				}
+
+				const { username, chatId } = user;
+				const message = `### 🔴 **${username}** left`;
+				Logger.info(message);
+
+				emit(user.chatId as SocketEvent.onMessage, {
+					date: new Date().toString(),
+					message,
+					chatId,
+					files: [],
+					messageId: uuidv4(),
+					from: "Server",
+					username: "Server",
 				});
 			});
 		});

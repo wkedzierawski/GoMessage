@@ -1,4 +1,7 @@
 export enum SocketEvent {
+	connect = "connect",
+	reconnect = "reconnect",
+	disconnect = "disconnect",
 	join = "join",
 	onMessage = "onMessage",
 	sendMessage = "sendMessage",
@@ -6,12 +9,15 @@ export enum SocketEvent {
 
 export type SocketFile = { content: File; type: string; name: string };
 
-type User = {
+export type User = {
 	username: string;
 	chatId: string;
 };
 
 export type SocketPayload = {
+	[SocketEvent.connect]: unknown;
+	[SocketEvent.reconnect]: unknown;
+	[SocketEvent.disconnect]: unknown;
 	[SocketEvent.join]: User;
 	[SocketEvent.onMessage]: {
 		messageId: string;
