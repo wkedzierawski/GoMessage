@@ -26,6 +26,13 @@ export class SocketServer {
 				socket.on(event, callback as never);
 			};
 
+			const emit = <T extends SocketEvent>(
+				event: T,
+				payload: SocketPayload[T]
+			) => {
+				this.io.emit(event, payload);
+			};
+
 			on(SocketEvent.sendMessage, (payload) => {
 				Logger.info("Send message event");
 				if (!payload?.chatId) {
@@ -35,6 +42,23 @@ export class SocketServer {
 					...payload,
 					messageId: uuidv4(),
 					from: socket.id,
+				});
+			});
+
+			on(SocketEvent.join, ({ chatId, username, ...rest } = {}) => {
+				if (!chatId || !username) {
+					return;
+				}
+				Logger.info(`User ${username} joined ${chatId}`);
+				emit(chatId as SocketEvent.onMessage, {
+					date: new Date().toString(),
+					message: `User **${username}** joined chat ${chatId}`,
+					chatId,
+					files: [],
+					messageId: uuidv4(),
+					from: "Server",
+					username: "Server",
+					...rest,
 				});
 			});
 		});
