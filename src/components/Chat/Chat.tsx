@@ -70,11 +70,13 @@ export const Chat = () => {
 			date: new Date().toISOString(),
 			message,
 			chatId,
-			files: files.map((file) => ({
-				content: file,
-				type: file.type,
-				name: file.name,
-			})),
+			files: files
+				.map((file) => ({
+					content: file,
+					type: file.type,
+					name: file.name,
+				}))
+				.sort((a, b) => a.type.localeCompare(b.type)),
 			username,
 		});
 	};

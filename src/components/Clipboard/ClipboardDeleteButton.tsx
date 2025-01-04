@@ -28,5 +28,6 @@ const useStyles = createUseStyles({
 		"&:hover": {
 			color: red[500],
 		},
+		zIndex: 10,
 	},
 });
