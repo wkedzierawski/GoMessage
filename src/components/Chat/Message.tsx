@@ -14,6 +14,7 @@ export type MessageProps = {
 	message: string;
 	self: boolean;
 	files: SocketFile[];
+	username: string;
 };
 
 export const Message = ({
@@ -22,6 +23,7 @@ export const Message = ({
 	date,
 	files,
 	messageId,
+	username,
 }: MessageProps) => {
 	const styles = useStyles();
 	const ref = useRef<HTMLDivElement | null>(null);
@@ -63,7 +65,7 @@ export const Message = ({
 				</Box>
 			</If>
 			<Typography className={styles.date} variant="caption">
-				{dayjs(date).format("HH:mm")}
+				{`${username} | ${dayjs(date).format("HH:mm")}`}
 			</Typography>
 		</Paper>
 	);
@@ -89,6 +91,7 @@ const useStyles = createUseStyles({
 		marginBottom: "2px",
 		marginRight: "10px",
 		marginLeft: "auto",
+		textTransform: "capitalize",
 	},
 	message: {
 		padding: "10px 20px 0 20px",

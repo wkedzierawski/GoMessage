@@ -1,6 +1,6 @@
 import { Box, Paper } from "@mui/material";
 import { grey } from "@mui/material/colors";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Message, MessageProps } from "./Message";
 import { Input } from "./Input";
 import { AppSocket, SocketEvent } from "../../services/AppSocket";
@@ -12,23 +12,16 @@ import { useChangeEffect } from "../../hooks/useChangeEffect";
 import { createUseStyles } from "react-jss";
 import { Dropzone } from "../Dropzone";
 import { useFilesStore } from "../../store/filesStore";
-
-const initMessage = (chatId: string | undefined): MessageProps[] => [
-	{
-		date: new Date().toISOString(),
-		message: `Entered chat: ${chatId}`,
-		messageId: "0",
-		files: [],
-		self: false,
-	},
-];
+import { generateUsername } from "unique-username-generator";
 
 export const Chat = () => {
+	const username = useRef(generateUsername("-")).current;
+
 	const styles = useStyles();
 
 	const { chatId } = useParams();
 
-	const [messages, setMessages] = useState<MessageProps[]>(initMessage(chatId));
+	const [messages, setMessages] = useState<MessageProps[]>([]);
 
 	const socketConnected = useSocketConnected();
 
@@ -37,6 +30,14 @@ export const Chat = () => {
 	useChangeEffect(() => {
 		queryClient.invalidateQueries({ queryKey: [QueryKey.chat] });
 	}, [socketConnected]);
+
+	useEffect(() => {
+		if (!chatId) {
+			return;
+		}
+
+		AppSocket.emit(SocketEvent.join, { username, chatId });
+	}, [chatId, username]);
 
 	useEffect(() => {
 		if (!chatId) {
@@ -74,6 +75,7 @@ export const Chat = () => {
 				type: file.type,
 				name: file.name,
 			})),
+			username,
 		});
 	};
 
