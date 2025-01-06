@@ -14,6 +14,7 @@ import { Dropzone } from "../Dropzone";
 import { useFilesStore } from "../../store/filesStore";
 import { generateUsername } from "unique-username-generator";
 import { OnlineCounter } from "./OnlineCounter";
+import { mobileMaxWidth } from "../../utils/consts";
 
 export const Chat = () => {
 	const username = useRef(generateUsername("-")).current;
@@ -111,7 +112,7 @@ const useStyles = createUseStyles({
 		maxWidth: "920px",
 		background: grey[800],
 		alignItems: "space-between",
-		"@media (max-width:600px)": {
+		[`@media (max-width:${mobileMaxWidth})`]: {
 			position: "absolute",
 			width: "100vw",
 			height: "100dvh",

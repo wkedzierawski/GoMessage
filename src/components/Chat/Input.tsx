@@ -15,6 +15,7 @@ import { Dropzone } from "../Dropzone";
 import { If } from "../../utils/If";
 import { createUseStyles } from "react-jss";
 import { useFilesStore } from "../../store/filesStore";
+import { mobileMaxWidth } from "../../utils/consts";
 
 type Props = Omit<TextFieldProps, "onSubmit"> & {
 	onSubmit: (message: string, images: File[]) => void;
@@ -148,6 +149,9 @@ const useStyles = createUseStyles({
 		marginBottom: "25px",
 		flexDirection: "column",
 		padding: "0 25px",
+		[`@media (max-width:${mobileMaxWidth})`]: {
+			padding: "0",
+		},
 	},
 	filesWrapper: {
 		display: "flex",
@@ -196,7 +200,6 @@ const useStyles = createUseStyles({
 		margin: 0,
 		padding: 0,
 		overflowY: "scroll",
-		paddingRight: 10,
 		paddingLeft: 0,
 		"&::-webkit-scrollbar": {
 			display: "none",

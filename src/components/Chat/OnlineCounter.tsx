@@ -5,6 +5,7 @@ import { createUseStyles } from "react-jss";
 import { FaInfoCircle } from "react-icons/fa";
 import { AppTooltip } from "./AppTooltip";
 import { grey } from "@mui/material/colors";
+import { mobileMaxWidth } from "../../utils/consts";
 
 export const OnlineCounter = () => {
 	const styles = useStyles();
@@ -43,7 +44,7 @@ const useStyles = createUseStyles({
 		"&:hover": {
 			color: grey[400],
 		},
-		"@media (max-width:600px)": {
+		[`@media (max-width:${mobileMaxWidth})`]: {
 			display: "none",
 		},
 	},
