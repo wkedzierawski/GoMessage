@@ -22,6 +22,7 @@
 	"scripts": {
 		"dev": "npx nodemon ./src/app.ts",
 		"lint": "npx eslint .",
-		"build": "npx eslint . && tsc"
+		"build": "npx eslint . && tsc",
+		"update": "git pull && tsc"
 	}
 }
