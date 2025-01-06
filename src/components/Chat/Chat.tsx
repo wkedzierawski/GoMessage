@@ -85,7 +85,6 @@ export const Chat = () => {
 	return (
 		<Dropzone className={styles.container} onLoad={addFile}>
 			<Paper className={styles.container}>
-				<OnlineCounter />
 				<Box
 					sx={{
 						overflowY: "scroll",
@@ -96,6 +95,7 @@ export const Chat = () => {
 				</Box>
 				<Input onSubmit={sendMessage} />
 				<Status connected={socketConnected} />
+				<OnlineCounter />
 			</Paper>
 		</Dropzone>
 	);

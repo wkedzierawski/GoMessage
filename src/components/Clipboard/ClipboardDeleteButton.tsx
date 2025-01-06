@@ -12,7 +12,7 @@ export const ClipboardDeleteButton = ({ onClick }: Props) => {
 
 	return (
 		<IconButton className={styles.button} onClick={onClick}>
-			<FaTrash size={15} />
+			<FaTrash className={styles.icon} size={15} />
 		</IconButton>
 	);
 };
@@ -29,5 +29,8 @@ const useStyles = createUseStyles({
 			color: red[500],
 		},
 		zIndex: 10,
+	},
+	icon: {
+		filter: "drop-shadow(0 0 0.75rem black)",
 	},
 });

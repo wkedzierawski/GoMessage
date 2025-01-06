@@ -31,7 +31,7 @@ export const DownloadButton = ({ visible, file, name, type }: Props) => {
 	return (
 		<Tooltip title="Download">
 			<IconButton className={styles.container} onClick={onDownloadClicked}>
-				<FaDownload />
+				<FaDownload className={styles.icon} />
 			</IconButton>
 		</Tooltip>
 	);
@@ -45,5 +45,9 @@ const useStyles = createUseStyles({
 		top: 0,
 		left: 0,
 		zIndex: 10,
+		color: "whitesmoke",
+	},
+	icon: {
+		filter: "drop-shadow(0 0 0.75rem black)",
 	},
 });

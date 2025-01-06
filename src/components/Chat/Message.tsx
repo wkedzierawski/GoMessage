@@ -92,6 +92,7 @@ const useStyles = createUseStyles({
 		marginRight: "10px",
 		marginLeft: "auto",
 		textTransform: "capitalize",
+		paddingLeft: "10px",
 	},
 	message: {
 		padding: "10px 20px 0 20px",

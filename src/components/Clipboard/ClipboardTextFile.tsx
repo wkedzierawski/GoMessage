@@ -3,10 +3,10 @@ import { ClipboardElementProps } from "./ClipboardElement.types";
 import { createUseStyles } from "react-jss";
 import { ClipboardDeleteButton } from "./ClipboardDeleteButton";
 import { If } from "../../utils/If";
-import { FaFile } from "react-icons/fa";
 import { useMemo } from "react";
 import { Files } from "../../utils/file";
 import { useFilesStore } from "../../store/filesStore";
+import { BsFiletypeTxt } from "react-icons/bs";
 
 export const ClipboardTextFile = ({ file }: ClipboardElementProps) => {
 	const styles = useStyles();
@@ -25,10 +25,10 @@ export const ClipboardTextFile = ({ file }: ClipboardElementProps) => {
 	return (
 		<Box className={styles.container}>
 			<If condition={!text}>
-				<FaFile size={120} />
+				<BsFiletypeTxt size={120} />
 			</If>
 			<If condition={text}>
-				<code> {text}</code>
+				<code>{text}</code>
 			</If>
 			<If condition={file instanceof File}>
 				<ClipboardDeleteButton onClick={onClickRemove} />

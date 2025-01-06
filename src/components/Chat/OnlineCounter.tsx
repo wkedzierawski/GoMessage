@@ -24,7 +24,7 @@ export const OnlineCounter = () => {
 	return (
 		<AppTooltip title={message}>
 			<Box className={styles.container}>
-				<FaInfoCircle size={25} />
+				<FaInfoCircle className={styles.icon} size={25} />
 			</Box>
 		</AppTooltip>
 	);
@@ -46,5 +46,8 @@ const useStyles = createUseStyles({
 		"@media (max-width:600px)": {
 			display: "none",
 		},
+	},
+	icon: {
+		filter: "drop-shadow(0 0 0.75rem black)",
 	},
 });
